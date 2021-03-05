@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
+import 'package:testapp/global/envt.dart';
+
 void main() {
   runApp(App());
 }
@@ -29,9 +31,13 @@ class FutureAppBody extends StatefulWidget {
 class _FutureAppBodyState extends State<FutureAppBody> {
   Future xD;
 
+  void initState() {
+    super.initState();
+    xD = _getxD();
+  }
+
   _getxD() async {
     return await getData();
-    xD = _getxD();
   }
 
   Future<dynamic> getData() async {
@@ -39,9 +45,8 @@ class _FutureAppBodyState extends State<FutureAppBody> {
       Duration(seconds: 3),
     );
     try {
-      String url = 'http://192.168.56.1:1604';
       http.Response res =
-          await http.get(url).timeout(const Duration(seconds: 5));
+          await http.get(Envt.url).timeout(const Duration(seconds: 5));
 
       return convert.jsonDecode(res.body);
     } catch (e) {}
