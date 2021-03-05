@@ -10,51 +10,64 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.lime,
+      ),
       home: Scaffold(
         appBar: AppBar(),
-        body: StateFulBody(),
+        body: FutureAppBody(),
       ),
     );
   }
 }
 
-class StateFulBody extends StatefulWidget {
+class FutureAppBody extends StatefulWidget {
   @override
-  _StateFulBodyState createState() => _StateFulBodyState();
+  _FutureAppBodyState createState() => _FutureAppBodyState();
 }
 
-class _StateFulBodyState extends State<StateFulBody> {
-  Future<dynamic> _getData() async {
-    var data = await http
-        .get('http://192.168.43.129:1604/')
-        .timeout(const Duration(seconds: 10));
+class _FutureAppBodyState extends State<FutureAppBody> {
+  Future xD;
 
-    return convert.jsonDecode(data.body);
+  _getxD() async {
+    return await getData();
+    xD = _getxD();
+  }
+
+  Future<dynamic> getData() async {
+    await Future.delayed(
+      Duration(seconds: 3),
+    );
+    try {
+      String url = 'http://192.168.56.1:1604';
+      http.Response res =
+          await http.get(url).timeout(const Duration(seconds: 5));
+
+      return convert.jsonDecode(res.body);
+    } catch (e) {}
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _getData(),
-      // ignore: missing_return
-      builder: (BuildContext context, AsyncSnapshot snap) {
+      future: xD,
+      builder: (context, snapshot) {
         try {
-          if (snap.connectionState == ConnectionState.done) {
+          if (snapshot.connectionState == ConnectionState.done) {
             return Center(
-              child: Container(
-                child: Text(snap.data[0]['head']),
-              ),
+              child: Text(snapshot.data['ritu']),
             );
-          } else if (snap.connectionState == ConnectionState.waiting) {
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
             );
           }
         } catch (e) {
           return Center(
-            child: Text('Failed to fetch data from the internets'),
+            child: Text('Not Connected to internet'),
           );
         }
+        return CircularProgressIndicator();
       },
     );
   }
