@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
-import 'package:testapp/global/envt.dart';
+import './global/envt.dart';
 
 void main() {
   runApp(App());
@@ -17,7 +17,7 @@ class App extends StatelessWidget {
       ),
       home: Scaffold(
         appBar: AppBar(),
-        body: FutureAppBody(),
+        body: AppBody(),
       ),
     );
   }
@@ -74,6 +74,31 @@ class _FutureAppBodyState extends State<FutureAppBody> {
         }
         return CircularProgressIndicator();
       },
+    );
+  }
+}
+
+class AppBody extends StatelessWidget {
+  void _sendReq() async {
+    print('poki');
+    try {
+      await http.post(
+        Envt.url,
+        body: {'message': 'hello from flutter', 'status': 'JsonEncoded'},
+        headers: {'auth': 'xD'},
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: RaisedButton(
+        onPressed: _sendReq,
+        child: Text('click'),
+      ),
     );
   }
 }
